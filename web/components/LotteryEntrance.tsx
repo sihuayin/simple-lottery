@@ -24,6 +24,18 @@ console.log('raffleAddress', raffleAddress)
 
     const dispatch = useNotification()
 
+    const {
+      runContractFunction: createLottery,
+      data: enterTxResponse,
+      isLoading,
+      isFetching,
+  } = useWeb3Contract({
+      abi: abi,
+      contractAddress: raffleAddress,
+      functionName: "createLottery",
+      msgValue: entranceFee,
+      params: {},
+  })
     
     /* View Functions */
 
@@ -33,6 +45,13 @@ console.log('raffleAddress', raffleAddress)
         functionName: "getUnlockTime",
         params: {},
     })
+
+    const { runContractFunction: getCounter } = useWeb3Contract({
+      abi: abi,
+      contractAddress: raffleAddress, // specify the networkId
+      functionName: "getCounter",
+      params: {},
+  })
 
     async function updateUIValues() {
         // Another way we could make a contract call:
@@ -49,8 +68,10 @@ console.log('raffleAddress', raffleAddress)
         // setRecentWinner(recentWinnerFromCall)
         console.log('do it')
         const entranceFeeFromCall = await getUnlockTime() as BigInt;
-        console.log('that-->', entranceFeeFromCall)
+        const counter = await getCounter() as BigInt;
+        console.log('that-->', entranceFeeFromCall, counter)
         setEntranceFee(entranceFeeFromCall.toString())
+        setNumberOfPlayers(counter.toString())
     }
 
     useEffect(() => {
@@ -98,8 +119,15 @@ console.log('raffleAddress', raffleAddress)
                 <>
                     <button
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-auto"
-      
-                        // disabled={isLoading || isFetching}
+                        onClick={async () =>
+                          await createLottery({
+                              // onComplete:
+                              // onError:
+                              onSuccess: handleSuccess,
+                              onError: (error) => console.log(error),
+                          })
+                      }
+                        disabled={isLoading || isFetching}
                     >
                         
                     </button>

@@ -2,8 +2,8 @@
 import { network, run, ethers } from "hardhat"
 import fs from 'fs'
 
-const frontEndAbiFile = './doc/abi.json';
-const frontEndContractsFile = './doc/contracts.json';
+const frontEndAbiFile = '../web/doc/abi.json';
+const frontEndContractsFile = '../web/doc/contracts.json';
 async function deploy(chainId: number) {
 
   const JAN_1ST_2030 = 1893456000;
