@@ -1,6 +1,9 @@
 lockfileVersion: '6.0'
 
 dependencies:
+  '@openzeppelin/contracts':
+    specifier: ^5.1.0
+    version: 5.1.0
   hardhat:
     specifier: ^2.22.9
     version: 2.22.9(ts-node@10.9.2)(typescript@5.5.4)
@@ -765,6 +768,10 @@ packages:
       '@nomicfoundation/solidity-analyzer-linux-x64-gnu': 0.1.2
       '@nomicfoundation/solidity-analyzer-linux-x64-musl': 0.1.2
       '@nomicfoundation/solidity-analyzer-win32-x64-msvc': 0.1.2
+
+  /@openzeppelin/contracts@5.1.0:
+    resolution: {integrity: sha512-p1ULhl7BXzjjbha5aqst+QMLY+4/LCWADXOCsmLHRM77AqiPjnd9vvUN9sosUfhL9JGKpZ0TjEGxgvnizmWGSA==}
+    dev: false
 
   /@scure/base@1.1.7:
     resolution: {integrity: sha512-PPNYBslrLNNUQ/Yad37MHYsNQtK67EhWb6WtSvNLLPo7SdVZgkUjD6Dg+5On7zNwmskf8OX7I7Nx5oN+MIWE0g==}

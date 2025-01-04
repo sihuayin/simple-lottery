@@ -1,22 +1,17 @@
 'use client'
-// import { Metadata } from "next";
-import SubHeader from "@/components/SubHeader";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 
+import { useState } from "react"
 import { useMoralis, useWeb3Contract } from "react-moralis"
 import { contractAddresses, abi } from "@/doc"
+import Header from "@/components/Header"
 
 export default function CreatePage() {
-
-  const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
-  const [imageUrl, setImageUrl] = useState('')
-  const [prize, setPrize] = useState('')
-  const [ticketPrice, setTicketPrice] = useState('')
-  const [expiresAt, setExpiresAt] = useState('')
-
-  const router = useRouter()
+  const [title, setTitle] = useState("")
+  const [imageUrl, setImageUrl] = useState("")
+  const [prize, setPrize] = useState("0")
+  const [ticketPrice, setTicketPrice] = useState("0")
+  const [expiresAt, setExpiresAt] = useState("")
+  const [description, setDescription] = useState("")
 
   const { Moralis, isWeb3Enabled, chainId: chainIdHex } = useMoralis()
   // These get re-rendered every time due to our connect button!
@@ -71,7 +66,7 @@ const handleSuccess = async (tx: any) => {
         params
       },
       onSuccess: handleSuccess,
-      onError: (error: Error) => console.log(error),
+      onError: (error) => console.log(error),
     })
   }
 
@@ -83,21 +78,19 @@ const handleSuccess = async (tx: any) => {
     setTicketPrice('')
     setExpiresAt('')
   }
-  
   return (
     <div className="min-h-screen bg-slate-100">
-      <SubHeader />
+        <Header />
+        <div className="flex flex-col justify-center items-center mt-20">
+          <div className=" flex flex-col items-center justify-center my-5">
+            <h1 className="text-2xl font-bold text-slate-800 py-5">Create Jackpots</h1>
+            <p className="text-center text-sm text-slate-600">
+              We bring a persolan and effective every project we work on. <br />
+              which is why our client love why they keep coming back.
+            </p>
+          </div>
 
-      <div className="flex flex-col justify-center items-center mt-20">
-        <div className="flex flex-col items-center justify-center my-5">
-          <h1 className="text-2xl font-bold text-slate-800 py-5">Create Jackpots</h1>
-          <p className="text-center text-sm text-slate-600">
-            We bring a persolan and effective every project we work on. <br />
-            which is why our client love why they keep coming back.
-          </p>
-        </div>
-
-        <form onSubmit={handleSubmit} className="w-full max-w-md">
+          <form onSubmit={handleSubmit} className="w-full max-w-md">
             <div className="mb-4">
               <input
                 className="appearance-none border rounded w-full py-2 px-3
@@ -188,7 +181,7 @@ const handleSuccess = async (tx: any) => {
               </button>
             </div>
           </form>
+        </div>
       </div>
-    </div>
   )
 }

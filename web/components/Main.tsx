@@ -2,7 +2,8 @@
 
 import { useMoralis, useWeb3Contract } from "react-moralis";
 import LotteryEntrance from "./LotteryEntrance";
-import Jackpots from "./LotteryList";
+// import Jackpots from "./LotteryList";
+import Jackpots from "@/components/jackpots"
 import { contractAddresses, abi } from "../doc"
 import { useEffect, useState } from "react";
 import { describe } from "node:test";
@@ -10,9 +11,9 @@ import { describe } from "node:test";
 const supportedChains: string[] = ["31337", "11155111"]
 export const Main = () => {
   const [ data, setData] = useState([])
-  const { Moralis, isWeb3Enabled, chainId: chainIdHex } = useMoralis()
+  const { isWeb3Enabled, chainId: chainIdHex, ...others } = useMoralis()
   // These get re-rendered every time due to our connect button!
-
+  console.log('others', others)
     const chainId = parseInt(chainIdHex!)
     console.log('chainId', chainId, chainIdHex)
     // console.log(`ChainId is ${chainId}`)
@@ -27,13 +28,19 @@ export const Main = () => {
   })
 
   useEffect(() => {
+    if (!isWeb3Enabled) {
+      return
+    }
     const get = async () => {
-      const values = await getLotteries()
+      const values = await getLotteries({
+        onError: (error) => console.log(error),
+        onSuccess: (data) => console.log(data, '-> data')
+      })
       console.log(values, '-> values, raffleAddress')
       setData(values)
     }
     get()
-  }, [getLotteries, raffleAddress])
+  }, [getLotteries, raffleAddress, isWeb3Enabled])
   
   return (
     <div className="px-8">

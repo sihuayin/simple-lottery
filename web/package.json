@@ -13,8 +13,11 @@
     "next": "14.2.7",
     "react": "^18",
     "react-dom": "^18",
+    "react-icons": "^5.4.0",
+    "react-identicons": "^1.2.5",
     "react-moralis": "^1.4.2",
-    "web3uikit": "^0.1.159"
+    "web3uikit": "^0.1.159",
+    "zustand": "^5.0.2"
   },
   "devDependencies": {
     "@types/node": "^20",

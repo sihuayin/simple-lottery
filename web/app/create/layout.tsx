@@ -1,13 +1,14 @@
 'use client'
-
+import React from "react";
 import { MoralisProvider } from "react-moralis";
-const CreateLayout = ({ children }: { children: React.ReactNode }) => {
+import { NotificationProvider } from "web3uikit";
+
+export default function CreateLayout({ children }: { children: React.ReactNode}) {
   return (
     <MoralisProvider initializeOnMount={false}>
-      { children }
-      </MoralisProvider>
+      <NotificationProvider>
+        {children}
+      </NotificationProvider>
+    </MoralisProvider>
   )
 }
-
-
-export default CreateLayout

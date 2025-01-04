@@ -8,6 +8,18 @@ const nextConfig = {
         port: '',
         pathname: '/png/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'dapplottery.vercel.app',
+        port: '',
+        pathname: '/_next/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn.pixabay.com',
+        port: '',
+        pathname: '/photo/**',
+      },
     ],
   },
 };
