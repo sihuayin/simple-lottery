@@ -16,7 +16,6 @@ export default function JackpotPage({params}: {params: {jackpotId: string}}) {
   )
 }
 export async function generateStaticParams() {
-  return []
+  return Array.from({ length: 1000 }, (_, i) => ({jackpotId: i+''}))
 }
 
-export const dynamic = 'force-dynamic'
