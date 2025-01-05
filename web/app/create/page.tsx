@@ -1,11 +1,9 @@
 'use client'
-// import { Metadata } from "next";
+
 import SubHeader from "@/components/SubHeader";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-
-import { useMoralis, useWeb3Contract } from "react-moralis"
-import { contractAddresses, abi } from "@/doc"
+import { useContract } from "@/hooks/useContract";
 
 export default function CreatePage() {
 
@@ -18,32 +16,15 @@ export default function CreatePage() {
 
   const router = useRouter()
 
-  const { Moralis, isWeb3Enabled, chainId: chainIdHex } = useMoralis()
-  // These get re-rendered every time due to our connect button!
+const [data, error, isLoading, runContractFunction] = useContract('createLottery', {}, false)
 
-  const chainId = parseInt(chainIdHex!)
-  console.log('chainId', chainId, chainIdHex)
-  // console.log(`ChainId is ${chainId}`)
-  const raffleAddress = chainId in contractAddresses ? (contractAddresses as any)[chainId][0] : null
-console.log('raffleAddress', raffleAddress)
-
-const {
-  runContractFunction: createLottery,
-  data: enterTxResponse,
-  isLoading,
-  isFetching,
-} = useWeb3Contract({
-  abi: abi,
-  contractAddress: raffleAddress,
-  functionName: "createLottery",
-  params: {},
-})
 
 const handleSuccess = async (tx: any) => {
   try {
       await tx.wait(1)
       console.log('yes, dd')
       onReset()
+      router.push("/")
   } catch (error) {
       console.log(error)
   }
@@ -63,10 +44,7 @@ const handleSuccess = async (tx: any) => {
     }
 
     console.log('fasonghe yue')
-    await createLottery({
-      // onComplete:
-      // onError:
-
+    await runContractFunction({
       params: {
         params
       },
@@ -96,6 +74,12 @@ const handleSuccess = async (tx: any) => {
             which is why our client love why they keep coming back.
           </p>
         </div>
+
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+            <span className="block sm:inline">{error.message}</span>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="w-full max-w-md">
             <div className="mb-4">
@@ -180,6 +164,7 @@ const handleSuccess = async (tx: any) => {
             </div>
             <div className="flex justify-center">
               <button
+                disabled={isLoading}
                 className="w-full bg-[#0c2856] hover:bg-[#1a396c] text-white font-bold
                 py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                 type="submit"

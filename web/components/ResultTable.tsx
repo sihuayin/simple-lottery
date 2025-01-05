@@ -4,98 +4,25 @@ import { useEffect, useState } from "react"
 import Countdown from "./Countdown"
 import { useMoralis, useWeb3Contract } from "react-moralis"
 import Link from "next/link"
-import { abi, contractAddresses } from "@/doc"
 import { truncate } from "@/utils/util"
 import Identicon from 'react-identicons'
 import { FaEthereum } from 'react-icons/fa'
 import { useWinnerModal } from "@/store/store"
+import { useContract } from "@/hooks/useContract"
 
 const ResultTable = ({ jackpotId }: { jackpotId: string }) => {
   const show = useWinnerModal((state: any) => state.show)
-  const [jackpot, setJackpot] = useState<any>({})
-  const [participants, setParticipants] = useState<any[]>([])
-  const [result, setResult] = useState<any>({})
-   const { isWeb3Enabled, chainId: chainIdHex,  account } = useMoralis()
-   const chainId = parseInt(chainIdHex!)
-   const raffleAddress = chainId in contractAddresses ? (contractAddresses as any)[chainId][0] : null
-   const { runContractFunction: getParticipants } = useWeb3Contract({
-    abi: abi,
-    contractAddress: raffleAddress, // specify the networkId
-    functionName: "getLotteryParticipants",
-    params: { id: jackpotId},
-  })
+  const [jackpot] = useContract('getLottery', { id: jackpotId }, true)
+  const [participants] = useContract('getLotteryParticipants', { id: jackpotId }, true)
+  const [result] = useContract('getLotteryResult', { id: jackpotId }, true)
+  const {  account } = useMoralis()
 
-  const { runContractFunction: getLottery } = useWeb3Contract({
-    abi: abi,
-    contractAddress: raffleAddress, // specify the networkId
-    functionName: "getLottery",
-    params: { id: jackpotId},
-  })
-
-  const { runContractFunction: getLotteryResult } = useWeb3Contract({
-    abi: abi,
-    contractAddress: raffleAddress, // specify the networkId
-    functionName: "getLotteryResult",
-    params: { id: jackpotId},
-  })
-
-  useEffect(() => {
-      if (!isWeb3Enabled) {
-        return
-      }
-      const get = async (params: any) => {
-        const values = await getLottery({
-          params,
-          onError: (error) => console.log(error),
-          onSuccess: (data) => console.log(data, '-> data')
-        })
-        console.log(values, 'Jacktop-> values, raffleAddress')
-        setJackpot(values)
-      }
-      get({ id: jackpotId})
-  }, [getLottery, jackpotId, isWeb3Enabled])
-
-  useEffect(() => {
-    if (!isWeb3Enabled) {
-      return
-    }
-    const get = async (params: any) => {
-      const values = await getLotteryResult({
-        params,
-        onError: (error) => console.log(error),
-        onSuccess: (data) => console.log(data, '-> data')
-      })
-      console.log(values, 'setResult-> values, raffleAddress')
-      setResult(values)
-    }
-    get({ id: jackpotId})
-  }, [getLotteryResult, jackpotId, isWeb3Enabled])
-
-  useEffect(() => {
-    if (!isWeb3Enabled) {
-      return
-    }
-    const get = async (params: any) => {
-      const values = await getParticipants({
-        params,
-        onError: (error) => console.log(error),
-        onSuccess: (data) => console.log(data, '-> data')
-      })
-      console.log(values, 'getParticipants-> values, raffleAddress')
-      if (values && Array.isArray(values)) {
-        setParticipants(values)
-      }
-    }
-    get({ id: jackpotId})
-  }, [getParticipants, jackpotId, isWeb3Enabled])
-  
   const onDraw = () => {
-    // if (Number(jackpot?.expiresAt) > Date.now()) {
-    //   alert('Still counting down')
-    // }
+    if (Number(jackpot?.expiresAt) > Date.now()) {
+      alert('Still counting down')
+    }
     show('scale-100')
   }
-  
 
   return (
     <div className="py-10 px-5 bg-slate-100">
@@ -160,7 +87,7 @@ const ResultTable = ({ jackpotId }: { jackpotId: string }) => {
                     {truncate(participant.account || '', 4, 4, 11)}
                   </p>
                   <p className="text-slate-500">{participant.lotteryNumber}</p>
-                  {result?.winners?.includes(participant.lotteryNumber) ? (
+                  {(result?.winners)?.map((v: any) => v.lotteryNumber).includes(participant.lotteryNumber) ? (
                     <p className="text-green-500 flex justify-start items-center">
                       + <FaEthereum /> {Number(result?.sharePerWinner)} {' winner'}
                     </p>

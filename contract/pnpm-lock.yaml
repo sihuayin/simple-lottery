@@ -4,6 +4,9 @@ dependencies:
   '@openzeppelin/contracts':
     specifier: ^5.1.0
     version: 5.1.0
+  dotenv:
+    specifier: ^16.4.7
+    version: 16.4.7
   hardhat:
     specifier: ^2.22.9
     version: 2.22.9(ts-node@10.9.2)(typescript@5.5.4)
@@ -1577,6 +1580,11 @@ packages:
     dependencies:
       path-type: 4.0.0
     dev: true
+
+  /dotenv@16.4.7:
+    resolution: {integrity: sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ==}
+    engines: {node: '>=12'}
+    dev: false
 
   /elliptic@6.5.4:
     resolution: {integrity: sha512-iLhC6ULemrljPZb+QutR5TQGB+pdW6KGD5RSegS+8sorOZT+rdQFbsQFJgvN3eRqNALqJer4oQ16YvJHlU8hzQ==}

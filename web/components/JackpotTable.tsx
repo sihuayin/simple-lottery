@@ -7,97 +7,36 @@ import { useMoralis, useWeb3Contract } from "react-moralis"
 import { abi, contractAddresses } from "@/doc"
 import { useEffect, useState } from "react"
 import { useGeneratorModal } from "@/store/store"
+import { useContract } from "@/hooks/useContract"
 
 const JackpotTable = ({ jackpotId }: any) => {
   const show = useGeneratorModal((state: any) => state.show)
-  const [luckNumbers, setLuckNumbers] = useState([])
-  const [jackpot, setJackpot] = useState<any>({})
-  const [participants, setParticipants] = useState<any[]>([])
+  // const [luckNumbers, setLuckNumbers] = useState([])
+  // const [jackpot, setJackpot] = useState<any>({})
+  // const [participants, setParticipants] = useState<any[]>([])
   const router = useRouter()
+  let participants = []
+
+  const [jackpot] = useContract("getLottery", { id: jackpotId}, true)
+  const [luckNumbers] = useContract("getLotteryLuckyNumbers", { id: jackpotId}, true)
+  const [data] = useContract("getLotteryParticipants", { id: jackpotId}, true)
+  if (data) {
+    participants = (data as any[]).map(v => v.lotteryNumber)
+  }
+
   const { Moralis, isWeb3Enabled, chainId: chainIdHex,  account, ...others} = useMoralis()
   // These get re-rendered every time due to our connect button!
   console.log('account', account)
   console.log('others', others)
-    const chainId = parseInt(chainIdHex!)
-    console.log('chainId', chainId, chainIdHex)
-    // console.log(`ChainId is ${chainId}`)
-    const raffleAddress = chainId in contractAddresses ? (contractAddresses as any)[chainId][0] : null
+  const chainId = parseInt(chainIdHex!)
+  console.log('chainId', chainId, chainIdHex)
+  // console.log(`ChainId is ${chainId}`)
+  const raffleAddress = chainId in contractAddresses ? (contractAddresses as any)[chainId][0] : null
 
-  const { runContractFunction: getLotteryLuckyNumbers } = useWeb3Contract({
-    abi: abi,
-    contractAddress: raffleAddress, // specify the networkId
-    functionName: "getLotteryLuckyNumbers",
-    params: { id: jackpotId},
-  })
-
-  const { runContractFunction: getLottery } = useWeb3Contract({
-    abi: abi,
-    contractAddress: raffleAddress, // specify the networkId
-    functionName: "getLottery",
-    params: { id: jackpotId},
-  })
-
-  const { runContractFunction: getParticipants } = useWeb3Contract({
-    abi: abi,
-    contractAddress: raffleAddress, // specify the networkId
-    functionName: "getLotteryParticipants",
-    params: { id: jackpotId},
-  })
 
   const { runContractFunction: buyTicket } = useWeb3Contract({
     msgValue: Number(jackpot?.ticketPrice)
   })
-
-  useEffect(() => {
-    if (!isWeb3Enabled) {
-      return
-    }
-    const get = async (params: any) => {
-      const values = await getLotteryLuckyNumbers({
-        params,
-        onError: (error) => console.log(error),
-        onSuccess: (data) => console.log(data, '-> data')
-      })
-      console.log(values, 'luckNumbers-> values, raffleAddress')
-      setLuckNumbers(values)
-    }
-    get({ id: jackpotId})
-
-  }, [getLotteryLuckyNumbers, jackpotId, isWeb3Enabled])
-
-  useEffect(() => {
-    if (!isWeb3Enabled) {
-      return
-    }
-    const get = async (params: any) => {
-      const values = await getLottery({
-        params,
-        onError: (error) => console.log(error),
-        onSuccess: (data) => console.log(data, '-> data')
-      })
-      console.log(values, 'Jacktop-> values, raffleAddress')
-      setJackpot(values)
-    }
-    get({ id: jackpotId})
-  }, [getLottery, jackpotId, isWeb3Enabled])
-
-  useEffect(() => {
-    if (!isWeb3Enabled) {
-      return
-    }
-    const get = async (params: any) => {
-      const values = await getParticipants({
-        params,
-        onError: (error) => console.log(error),
-        onSuccess: (data) => console.log(data, '-> data')
-      })
-      console.log(values, 'getParticipants-> values, raffleAddress')
-      if (values && Array.isArray(values)) {
-        setParticipants(values.map(v => v.lotteryNumber))
-      }
-    }
-    get({ id: jackpotId})
-  }, [getParticipants, jackpotId, isWeb3Enabled])
 
   const handlePurchase = async (luckyNumberId: number) => {
     if (!account) return 'Connect your wallet'
@@ -116,7 +55,7 @@ const JackpotTable = ({ jackpotId }: any) => {
   }
 
   const onGenerate = () => {
-    // if (luckNumbers.length > 0) return alert('Already generated')
+    if ((luckNumbers as any[]).length > 0) return alert('Already generated')
     show('scale-100')
   }
 

@@ -1,12 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { generateLuckyNumbers } from '../utils/util'
-import { abi, contractAddresses } from '@/doc'
-import { useMoralis, useWeb3Contract } from "react-moralis"
 import { useGeneratorModal } from '@/store/store'
 import { FaTimes } from 'react-icons/fa'
+import { useContract } from '@/hooks/useContract'
 
 const Generator = ({ jackpotId }: { jackpotId: string }) => {
   const router = useRouter()
@@ -14,29 +13,15 @@ const Generator = ({ jackpotId }: { jackpotId: string }) => {
   const generatorModal = useGeneratorModal((state: any) => state.generatorModal)
   const hide = useGeneratorModal((state: any) => state.hide)
 
-  const { Moralis, isWeb3Enabled, chainId: chainIdHex,  account, ...others} = useMoralis()
-  // These get re-rendered every time due to our connect button!
-  console.log('account', account)
-  console.log('others', others)
-  const chainId = parseInt(chainIdHex!)
-  console.log('chainId', chainId, chainIdHex)
-  // console.log(`ChainId is ${chainId}`)
-  const raffleAddress = chainId in contractAddresses ? (contractAddresses as any)[chainId][0] : null
-
   const numbers = generateLuckyNumbers(parseInt(luckyNumbers, 10))
-  const { runContractFunction: importLuckyNumbers } = useWeb3Contract({
-    abi: abi,
-    contractAddress: raffleAddress, // specify the networkId
-    functionName: "importLuckyNumbers",
-    params: {
-      id: jackpotId,
-      luckyNumbers: numbers
-    }
-  })
+  const [data, error, isLoading, runContractFunction] = useContract('importLuckyNumbers',  {
+    id: jackpotId,
+    luckyNumbers: numbers
+  }, false)
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    await importLuckyNumbers(
+    await runContractFunction(
       {
         onError: (error) => console.log(error),
         onSuccess: (data) => console.log(data, '-> data')
@@ -44,6 +29,7 @@ const Generator = ({ jackpotId }: { jackpotId: string }) => {
     )
 
     setLuckyNumbers('')
+    hide()
   }
 
   return (
@@ -88,6 +74,7 @@ const Generator = ({ jackpotId }: { jackpotId: string }) => {
 
           <button
             type="submit"
+            disabled={isLoading || luckyNumbers === ""}
             className="flex flex-row justify-center items-center
               w-full text-white text-md py-2 px-5 rounded-full
               drop-shadow-xl bg-[#0c2856] hover:bg-[#1a396c]"
