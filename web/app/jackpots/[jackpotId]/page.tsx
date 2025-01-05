@@ -1,3 +1,5 @@
+
+
 import Generator from "@/components/Generator";
 import JackpotTable from "@/components/JackpotTable";
 import SubHeader from "@/components/SubHeader";
@@ -13,3 +15,8 @@ export default function JackpotPage({params}: {params: {jackpotId: string}}) {
       </div>
   )
 }
+export async function generateStaticParams() {
+  return []
+}
+
+export const dynamic = 'force-dynamic'

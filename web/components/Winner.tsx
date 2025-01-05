@@ -23,7 +23,7 @@ const Winners = ({ resultId }: { resultId: string }) => {
     functionName: "randomlySelectWinners",
     params: { id: resultId, numOfWinners: numberOfwinners},
   })
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault()
 
     await performDraw({

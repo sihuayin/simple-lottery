@@ -14,7 +14,6 @@ if (isGithubActions) {
 const nextConfig = {
   basePath,
   assetPrefix,
-  output: 'export',
   images: {
     remotePatterns: [
       {

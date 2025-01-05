@@ -17,3 +17,9 @@ function Result({ params }: { params: { jackpotId: string }}) {
 }
 
 export default Result
+
+export async function generateStaticParams() {
+  return []
+}
+
+export const dynamic = 'force-dynamic'
