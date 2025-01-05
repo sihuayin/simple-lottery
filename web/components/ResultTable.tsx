@@ -5,6 +5,7 @@ import Countdown from "./Countdown"
 import { useMoralis, useWeb3Contract } from "react-moralis"
 import Link from "next/link"
 import { truncate } from "@/utils/util"
+// @ts-ignore
 import Identicon from 'react-identicons'
 import { FaEthereum } from 'react-icons/fa'
 import { useWinnerModal } from "@/store/store"
@@ -12,9 +13,9 @@ import { useContract } from "@/hooks/useContract"
 
 const ResultTable = ({ jackpotId }: { jackpotId: string }) => {
   const show = useWinnerModal((state: any) => state.show)
-  const [jackpot] = useContract('getLottery', { id: jackpotId }, true)
-  const [participants] = useContract('getLotteryParticipants', { id: jackpotId }, true)
-  const [result] = useContract('getLotteryResult', { id: jackpotId }, true)
+  const [jackpot] = useContract('getLottery', { id: jackpotId }, true) as any
+  const [participants] = useContract('getLotteryParticipants', { id: jackpotId }, true) as any
+  const [result] = useContract('getLotteryResult', { id: jackpotId }, true) as any
   const {  account } = useMoralis()
 
   const onDraw = () => {
@@ -72,7 +73,7 @@ const ResultTable = ({ jackpotId }: { jackpotId: string }) => {
           <h4 className="text-2xl font-bold text-slate-700 text-center">Winners & Lossers</h4>
 
           <div className="space-y-2 max-h-80 overflow-y-auto">
-            {participants?.map((participant, i) => (
+            {participants?.map((participant: any, i: number) => (
               <div
                 key={i}
                 className="flex justify-start items-center border-b border-gray-100 py-2 space-x-2"

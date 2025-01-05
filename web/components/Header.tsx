@@ -5,16 +5,6 @@ import Link from 'next/link'
 const networking =
   'https://dapplottery.vercel.app/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fnetworking.1f3500e7.png&w=3840&q=75'
 const background = 'https://dapplottery.vercel.app/_next/static/media/background.a7d45fa2.jpg'
-// export default function Header() {
-//     return (
-//         <nav className="p-5 border-b-2 flex flex-row">
-//             <h1 className="py-4 px-4 font-bold text-3xl"> Decentralized Lottery</h1>
-//             <div className="ml-auto py-2 px-4">
-//                 <ConnectButton moralisAuth={false}/>
-//             </div>
-//         </nav>
-//     )
-// }
 
 export default function Header() {
   return (

@@ -11,14 +11,11 @@ import { useContract } from "@/hooks/useContract"
 
 const JackpotTable = ({ jackpotId }: any) => {
   const show = useGeneratorModal((state: any) => state.show)
-  // const [luckNumbers, setLuckNumbers] = useState([])
-  // const [jackpot, setJackpot] = useState<any>({})
-  // const [participants, setParticipants] = useState<any[]>([])
   const router = useRouter()
   let participants = []
 
-  const [jackpot] = useContract("getLottery", { id: jackpotId}, true)
-  const [luckNumbers] = useContract("getLotteryLuckyNumbers", { id: jackpotId}, true)
+  const [jackpot] = useContract("getLottery", { id: jackpotId}, true) as any
+  const [luckNumbers] = useContract("getLotteryLuckyNumbers", { id: jackpotId}, true) as any
   const [data] = useContract("getLotteryParticipants", { id: jackpotId}, true)
   if (data) {
     participants = (data as any[]).map(v => v.lotteryNumber)
@@ -113,7 +110,7 @@ const JackpotTable = ({ jackpotId }: any) => {
             </tr>
           </thead>
           <tbody className="max-h-80 overflow-y-auto block">
-            {luckNumbers?.map((luckyNumber, i) => (
+            {luckNumbers?.map((luckyNumber: string, i: number) => (
               <tr className="flex justify-between border-b text-left" key={i}>
                 <td className="px-4 py-2 font-semibold">{i + 1}</td>
                 <td className="px-4 py-2 font-semibold">
